@@ -1,0 +1,4 @@
+*.conf
+.DS_Store
+/dppr
+scratch.py
