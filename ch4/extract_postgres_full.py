@@ -14,7 +14,7 @@ port = parser.get('postgres_config', 'port')
 
 # the only difference from mysql
 conn = psycopg2.connect(
-	'dbname' + dbname +
+	'dbname=' + dbname +
 	' user=' + user +
 	' password=' + password +
 	' host=' + host,
