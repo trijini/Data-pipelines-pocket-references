@@ -1,37 +1,51 @@
 from datetime import timedelta
 from airflow import DAG
-from airflow.operators.bash_operator import BashOperator
+from airflow.operators.python_operator import PythonOperator
 from airflow.utils.dates import days_ago
+from p.simple_extract_upload import Copy, Extract
 
-# define DAG
-dag = DAG(
+
+def execute(**kwargs):
+    table = kwargs['table']
+    file = kwargs['file']
+    task = kwargs['task']
+
+    if task == 'extract':
+        s = Extract(table, file)
+        return s.extract()
+    elif task == 'copy':
+        s = Copy(table, file)
+        return s.upload()
+
+
+with DAG(
     'simple_dag',
-     description='A simple DAG',
-     schedule_interval=timedelta(days=1),
-     start_date = days_ago(1),
-)
+    description='A simple DAG',
+    schedule_interval=timedelta(days=1),
+    start_date=days_ago(1),
+) as dag:
 
-# define tasks
-t1 = BashOperator(
-    task_id='print_date',
-    bash_command='date',
-    dag=dag,
-)
+    # define tasks
+    t1 = PythonOperator(
+        task_id='extract',
+        python_callable=execute,
+        op_kwargs={
+            'table': 'Orders',
+            'file': 'order_extract.csv',
+            'task': 'extract'
+        },
+        dag=dag,
+    )
 
-t2 = BashOperator(
-    task_id='sleep',
-    depends_on_past=False,
-    bash_command='sleep 3',
-    dag=dag,
-)
+    t2 = PythonOperator(
+        task_id='copy',
+        python_callable=execute,
+        op_kwargs={
+            'table': 'Mock',
+            'file': 'order_extract.csv',
+            'task': 'copy'
+        },
+        dag=dag,
+    )
 
-t3 = BashOperator(
-    task_id='print_end',
-    depends_on_past=False,
-    bash_command='echo \'end\'',
-    dag=dag,
-)
-
-# define the dependencies between the tasks
-t1 >> t2  # this means when the task t1 completes, t2 runs
-t2 >> t3
+t1 >> t2
