@@ -1,4 +1,5 @@
 *.conf
 .DS_Store
 /dppr
+/.vscode
 scratch.py
