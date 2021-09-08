@@ -1,4 +1,4 @@
-*.conf
+../*.conf
 .DS_Store
 /dppr
 /.vscode
