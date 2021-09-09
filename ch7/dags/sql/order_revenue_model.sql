@@ -2,7 +2,8 @@ CREATE TABLE IF NOT EXISTS order_summary_daily (
 	order_date DATE,
 	order_country VARCHAR(10),
 	total_revenue NUMERIC,
-	order_count INT);
+	order_count INT
+);
 
 INSERT INTO order_summary_daily (order_date, order_country, total_revenue, order_count)
 SELECT
