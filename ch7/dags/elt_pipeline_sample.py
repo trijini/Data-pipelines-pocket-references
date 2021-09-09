@@ -3,7 +3,7 @@ from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.postgres_operator import PostgresOperator
 from airflow.utils.dates import days_ago
-from p.stage import Extract, Load
+from p.extract_and_load_to_redshift import Extract, Load
 
 
 def execute(**kwargs):
