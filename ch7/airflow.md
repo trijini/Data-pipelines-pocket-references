@@ -84,3 +84,13 @@ sql_alchemy_conn = postgresql+psycopg2://airflow:my_password@localhost:5432/airf
 ```
 
 그리고 이건 선택 사항인데 load_examples 를 True에서 False로 변경해주면 airflow 대쉬보드에 예제 DAGS 들이 나타나지 않는다.
+
+### 4. Add a connection with redshift
+
+Airflow에서 postgresql로 작업을 하려면 postgres provider를 설치해주어야 한다. provider는 추가 기능들을 사용할 수 있게 하는 패키지다.
+
+```shell
+$ pip install apache-airflow-providers-postgres
+```
+
+Airflow에서 redshift에 접근하려면 필요한 connection을 설정해주어야 한다. Admin > Connections 에 가서 새로운 connection을 만들어주는데 redshift는 postgresql을 기반으로 하고 있기 때문에 Conn Type에 Postgres를 선택해주고 dag 파일에서 사용할 Conn Id 와 redshift cluster 정보들(host, schema, login, password, port)을 설정해주면 끝.
