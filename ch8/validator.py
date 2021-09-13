@@ -6,11 +6,11 @@ import configparser
 def connect_to_warehouse():
     parser = configparser.ConfigParser()
     parser.read('pipeline.conf')
-    dbname = parser.get('aws_creds', 'database')
-    user = parser.get('aws_creds', 'username')
-    password = parser.get('aws_creds', 'password')
-    host = parser.get('aws_creds', 'host')
-    port = parser.get('aws_creds', 'port')
+    dbname = parser.get('postgres_config', 'database')
+    user = parser.get('postgres_config', 'username')
+    password = parser.get('postgres_config', 'password')
+    host = parser.get('postgres_config', 'host')
+    port = parser.get('postgres_config', 'port')
 
     rs_conn = psycopg2.connect(
         'dbname=' + dbname +
