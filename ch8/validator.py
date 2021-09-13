@@ -1,11 +1,14 @@
 import sys
 import psycopg2
 import configparser
-
+from pathlib import Path
 
 def connect_to_warehouse():
+    parent_dir = str(Path(__file__).parents[1]) + '/'
+    
     parser = configparser.ConfigParser()
-    parser.read('pipeline.conf')
+    config_path = parent_dir + 'pipeline.conf'
+    parser.read(config_path)
     dbname = parser.get('postgres_config', 'database')
     user = parser.get('postgres_config', 'username')
     password = parser.get('postgres_config', 'password')
