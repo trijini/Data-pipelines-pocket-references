@@ -24,7 +24,7 @@ def connect_to_warehouse():
 
 
 def execute_test(db_conn, script_1, script_2, comp_operator):
-    curtos = db_conn.cursor()
+    cursor = db_conn.cursor()
     sql_file = open(script_1, 'r')
     cursor.execute(sql_file.read())
 
@@ -59,7 +59,7 @@ def execute_test(db_conn, script_1, script_2, comp_operator):
         return result_1 != result_2
 
 
-if __name__ is '__main__':
+if __name__ == '__main__':
     if len(sys.argv) == 2 and sys.argv[1] == '-h':
         print(('Usage: python validator.py' +
                'script1.sql script2.sql ' +
@@ -82,11 +82,11 @@ if __name__ is '__main__':
 
     script_1 = sys.argv[1]
     script_2 = sys.argv[2]
-    comp_operator = sys.argvp[3]
+    comp_operator = sys.argv[3]
 
     db_conn = connect_to_warehouse()
-    test_result = execute_test(db_conn, script_1, script_2m comp_operator)
-    print(f'Result of test: {str(test_result)})
+    test_result = execute_test(db_conn, script_1, script_2, comp_operator)
+    print(f'Result of test: {str(test_result)}')
 
     if test_result is True:
         exit(0)
