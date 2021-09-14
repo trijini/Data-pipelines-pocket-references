@@ -1,11 +1,14 @@
 import sys
 import psycopg2
+import json
+import requests
 import configparser
 from pathlib import Path
 
+
 def connect_to_warehouse():
     parent_dir = str(Path(__file__).parents[1]) + '/'
-    
+
     parser = configparser.ConfigParser()
     config_path = parent_dir + 'pipeline.conf'
     parser.read(config_path)
@@ -53,13 +56,38 @@ def execute_test(db_conn, script_1, script_2, comp_operator):
     elif comp_operator == 'greater_equals':
         return result_1 >= result_2
     elif comp_operator == 'greater':
-        return result_1 > result_2 
+        return result_1 > result_2
     elif comp_operator == 'less_equals':
         return result_1 <= result_2
     elif comp_operator == 'less':
         return result_1 < result_2
     elif comp_operator == 'not_equal':
         return result_1 != result_2
+
+
+def send_slack_notification(webhook_url, script_1, script_2,
+                            comp_operator, test_result):
+    try:
+        if test_result is True:
+            message = ('Validation Test Passed!: '
+                       f'{script_1} / {script_2} / {comp_operator}')
+        else:
+            message = ('Validation Test FAILED!: '
+                       f'{script_1} / {script_2} / {comp_operator}')
+        slack_data = {'text': message}
+        response = requests.post(
+            url=webhook_url,
+            data=json.dumps(slack_data),
+            headers={'Content-Type': 'application/json'},
+        )
+        if response.status_code != 200:
+            print(response)
+            return False
+
+    except Exception as e:
+        print('error sending slack notification')
+        print(str(e))
+        return False
 
 
 if __name__ == '__main__':
@@ -77,7 +105,7 @@ if __name__ == '__main__':
 
         exit(0)
 
-    if len(sys.argv) != 4:
+    if len(sys.argv) != 5:
         print(('Usage: python validator.py' +
                'script1.sql script2.sql' +
                'comparison_operator'))
@@ -86,6 +114,7 @@ if __name__ == '__main__':
     script_1 = sys.argv[1]
     script_2 = sys.argv[2]
     comp_operator = sys.argv[3]
+    sev_level = sys.argv[4]
 
     db_conn = connect_to_warehouse()
     test_result = execute_test(db_conn, script_1, script_2, comp_operator)
@@ -94,5 +123,6 @@ if __name__ == '__main__':
     if test_result is True:
         exit(0)
     else:
+        send_slack_notification(webhook_url, script_1, script_2,
+                                comp_operator, test_result)
         exit(-1)
-
