@@ -123,6 +123,6 @@ if __name__ == '__main__':
     if test_result is True:
         exit(0)
     else:
-        send_slack_notification(webhook_url, script_1, script_2,
-                                comp_operator, test_result)
+        # send_slack_notification(webhook_url, script_1, script_2,
+        #                         comp_operator, test_result)
         exit(-1)
