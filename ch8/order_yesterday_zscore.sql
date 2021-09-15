@@ -15,6 +15,4 @@ order_count_zscore AS (
 SELECT ABS(z_score) AS twosided_score
 FROM order_count_zscore
 WHERE
-    order_date = CAST(current_timestamp AS DATE
-    - interval '1 day'
-);
+    order_date = CAST(current_timestamp AS DATE) - interval '1 day';
